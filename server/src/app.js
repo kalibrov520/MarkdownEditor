@@ -13,7 +13,8 @@ app.use(cors())
 app.get('/posts', (req,res) => {
     res.send(
         [{
-            title: "Hello world"
+            title: "Hello world",
+            description: "blabla"
         }]
     )
 })

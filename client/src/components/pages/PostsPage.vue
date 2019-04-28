@@ -1,3 +1,4 @@
+ /* eslint-disable */
 <template lang="pug">
   .container
     .row
@@ -6,8 +7,10 @@
           | Posts
         h3
           | This file will list all the posts
-
-        section.panel.panel-success( v-if="posts.length" )
+        a.btn.btn-block.btn-primary(href="/posts/new") add new post
+        // router-link( :to="{ name: 'NewPost' }" )
+        //       | add new post
+        section.panel.panel-success(v-if="posts.length")
           .panel-heading
             | list of posts
           table.table.table-striped
@@ -18,8 +21,13 @@
             tr( v-for="(post, index) in posts", :key="post.title" )
               td {{ post.title }}
               td {{ post.description }}
+              td
+                router-link( :to="{ name: 'EditPost', params: { id: post._id } }" )
+                  | edit post
+                button.btn.btn-danger.btn-sm( type="button", @click="removePost(post._id)" )
+                  | delete
 
-        section.panel.panel-danger( v-if="!posts.length" )
+        section.panel.panel-danger(v-if="posts.length<1")
           p
             | There are no posts ... Lets add one now!
           div
@@ -29,22 +37,27 @@
 
 <script>
 /* eslint-disable */
-  import PostsService from '@/services/PostsService'
-  export default {
-    name: 'PostsPage',
-    data () {
-      return {
-        posts: []
-      }
+import PostsService from "@/services/PostsService";
+export default {
+  name: "PostsPage",
+  data() {
+    return {
+      posts: []
+    };
+  },
+  methods: {
+    async getPosts() {
+      const response = await PostsService.fetchPosts();
+      this.posts = response.data.posts;
+      console.log(this.posts);
     },
-    methods: {
-      async getPosts () {
-        const response = await PostsService.fetchPosts()
-        this.posts = response.data.posts
-      }
-    },
-    mounted () {
-      this.getPosts()
+    async removePost(value) {
+      await PostsService.deletePost(value);
+      this.getPosts();
     }
+  },
+  mounted() {
+    this.getPosts();
   }
+};
 </script>
