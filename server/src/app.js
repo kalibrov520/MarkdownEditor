@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
+const config = require('./config/config');
 
 
 const app = express();
@@ -17,4 +18,5 @@ app.get('/posts', (req,res) => {
     )
 })
 
-app.listen(process.env.PORT || 8081)
+app.listen(process.env.PORT || config.port,
+    () => console.log('Server start on port ' + config.port + ' ...'))
